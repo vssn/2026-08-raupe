@@ -115,7 +115,7 @@ var Audio2 = {
    kleinen Melodie in Dur-Pentatonik. Alles ueber WebAudio geplant, kein
    Audiofile noetig – passt zum Rest der Klangkulisse. */
 var Music = {
-  playing: false, timer: null,
+  playing: false, timer: null, nodes: [],
   tempo: 96,
   scale: [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25], // C4-Dur bis C5
   chords: [
@@ -131,13 +131,23 @@ var Music = {
     this.playing = true;
     this.scheduleLoop(Audio2.ctx.currentTime + 0.12);
   },
+  /* scheduleLoop() plant jeweils eine ganze Runde (32 Schlaege, ~20s) im
+     Voraus direkt beim AudioContext ein. Das Loeschen des Timers verhindert
+     nur die naechste Runde – bereits geplante Toene der laufenden Runde
+     wuerden sonst einfach zu Ende spielen. Deshalb hier zusaetzlich jeden
+     bereits geplanten Oszillator sofort stoppen. */
   stop: function () {
     this.playing = false;
     if (this.timer) { clearTimeout(this.timer); this.timer = null; }
+    var now = Audio2.ctx ? Audio2.ctx.currentTime : 0;
+    this.nodes.forEach(function (o) {
+      try { o.stop(now); } catch (e) { /* war schon zu Ende */ }
+    });
+    this.nodes.length = 0;
   },
 
   pad: function (t, dur, freqs) {
-    var c = Audio2.ctx;
+    var c = Audio2.ctx, self = this;
     freqs.forEach(function (f) {
       var o = c.createOscillator(), g = c.createGain();
       o.type = 'sine'; o.frequency.setValueAtTime(f, t);
@@ -147,6 +157,7 @@ var Music = {
       g.gain.linearRampToValueAtTime(0.0001, t + dur);
       o.connect(g); g.connect(c.destination);
       o.start(t); o.stop(t + dur + 0.05);
+      self.nodes.push(o);
     });
   },
   pluck: function (t, freq, dur) {
@@ -157,10 +168,14 @@ var Music = {
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
     o.connect(g); g.connect(c.destination);
     o.start(t); o.stop(t + dur + 0.05);
+    this.nodes.push(o);
   },
 
   scheduleLoop: function (t0) {
     if (!this.playing) return;
+    /* Knoten der vorigen Runde sind laengst verklungen – Referenzen aufraeumen,
+       sonst waechst die Liste ueber eine lange Spielsitzung unbegrenzt. */
+    this.nodes.length = 0;
     var beat = 60 / this.tempo, i;
     for (i = 0; i < 4; i++) this.pad(t0 + i * beat * 8, beat * 8 * 1.02, this.chords[i]);
     for (i = 0; i < 32; i++) {
@@ -2063,7 +2078,7 @@ window.__g = { scene: scene, renderer: renderer, camera: camera, sun: sun, Cat: 
   walk: function (dt, n) { for (var i = 0; i < (n || 1); i++) { Cat.update(dt); updateWalk(dt); } return Cat.cells[0]; },
   park: function () { return { obstacles: Obstacles.size, reachable: Reachable.size, grid: GRID*GRID, spawn: SPAWN }; },
   isBlocked: isBlocked, isReachable: isReachable,
-  music: function () { return { playing: Music.playing, ctxState: Audio2.ctx ? Audio2.ctx.state : 'kein Context' }; },
+  music: function () { return { playing: Music.playing, nodes: Music.nodes.length, ctxState: Audio2.ctx ? Audio2.ctx.state : 'kein Context', now: Audio2.ctx ? Audio2.ctx.currentTime : null }; },
   items: function () { return items.map(function (it) { return it.cell; }); },
   cocoonCell: function () { return cocoonCell; },
   hold: function (n) { pressDir(n); },
