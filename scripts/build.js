@@ -4,6 +4,9 @@
    "three", per esbuild gebuendelt und minimiert) eine einzelne HTML-Datei.
 
    dist/fluegelhunger.html  – komplette Seite, laeuft per Doppelklick offline
+   dist/index.html          – dieselbe Datei, damit ein statischer Host (z.B.
+                              Netlify mit publish="dist") sie automatisch als
+                              Startseite ausliefert
    dist/artifact.html       – nur der Seiteninhalt (fuer Claude-Artifacts, die
                               doctype/head/body selbst ergaenzen)
 */
@@ -66,9 +69,10 @@ async function main() {
 
   const full = buildHtml(game);
   fs.writeFileSync(path.join(DIST, 'fluegelhunger.html'), full, 'utf8');
+  fs.writeFileSync(path.join(DIST, 'index.html'), full, 'utf8');
   fs.writeFileSync(path.join(DIST, 'artifact.html'), toArtifactInner(full), 'utf8');
 
-  for (const f of ['fluegelhunger.html', 'artifact.html']) {
+  for (const f of ['fluegelhunger.html', 'index.html', 'artifact.html']) {
     const size = fs.statSync(path.join(DIST, f)).size;
     console.log(f.padEnd(22) + (size / 1024).toFixed(0).padStart(7) + ' KB');
   }

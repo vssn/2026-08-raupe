@@ -17,6 +17,11 @@ CSS, Spiellogik) und läuft ohne Server und ohne Internet.
 Zum Entwickeln oder Neubauen ist ein npm-Projekt eingerichtet, siehe
 [Entwickeln](#entwickeln) unten.
 
+Live: <https://fluegelhunger.netlify.app/> — `netlify.toml` lässt Netlify bei
+jedem Push `npm run build` laufen und veröffentlicht `dist/`. Ohne diesen
+Build-Schritt fehlt `build/game.js` (bewusst nicht eingecheckt), und die Seite
+lädt nur die Wiese ohne Spiel.
+
 ## Regeln
 
 | Futter | Punkte | Extra |
@@ -76,7 +81,7 @@ als einziger `devDependency` fürs Bündeln). Einmalig installieren:
 Dann:
 
     npm run dev      # Entwicklungsserver mit Live-Rebuild, http://localhost:8123
-    npm run build     # baut dist/fluegelhunger.html + dist/artifact.html neu
+    npm run build     # baut dist/index.html (= fluegelhunger.html) + dist/artifact.html neu
 
 `npm start` ist ein Alias für `npm run dev`.
 
@@ -89,7 +94,9 @@ Dann:
     style.css           gesamtes UI
     src/game.js         Spiel: Szene, Raupe, Futter, Verpuppung, Falter (ES-Modul, importiert "three")
     build/game.js       Bundle-Ausgabe (generiert, nicht eingecheckt)
-    dist/               fluegelhunger.html (fertig) + artifact.html (nur Inhalt)
+    dist/               index.html + fluegelhunger.html (identisch, fertig)
+                       + artifact.html (nur Inhalt)
+    netlify.toml        Netlify: `npm run build`, veröffentlicht dist/
     node_modules/       generiert, nicht eingecheckt
 
 `src/game.js` beginnt mit `import * as THREE from 'three';` — das ist die einzige
