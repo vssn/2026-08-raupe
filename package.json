@@ -1,0 +1,18 @@
+{
+  "name": "fluegelhunger",
+  "version": "1.0.0",
+  "description": "Ein Browserspiel im Snake-Stil: Du führst eine Raupe über einen kleinen Park, sie wird mit jedem Blatt dicker und länger, und wenn sie dick genug ist, verpuppt sie sich und schlüpft als Schmetterling. Draufsicht, 2.5D — echte 3D-Modelle (three.js), aber rein zweidimensionale Steuerung auf einem 25×25-Raster.",
+  "scripts": {
+    "dev": "node scripts/dev.js",
+    "build": "node scripts/build.js",
+    "start": "npm run dev"
+  },
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "three": "0.149.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}

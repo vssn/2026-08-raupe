@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Flügelhunger</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="stage">
+  <canvas id="scene"></canvas>
+
+  <div id="hud" class="hidden">
+    <div class="hud-pill hud-time"><span class="ico">⏳</span><span id="time">90</span></div>
+    <div class="hud-pill hud-score">
+      <div class="row"><span class="ico">🍃</span><span id="score">0</span><span class="of">/ 20</span></div>
+      <div class="bar"><i id="bar"></i></div>
+    </div>
+    <div class="hud-pill hud-tally" id="tally"></div>
+  </div>
+
+  <div id="toast"></div>
+  <div id="hint" class="hidden"></div>
+  <div id="flash"></div>
+
+  <div id="dpad" class="hidden">
+    <button data-dir="up" aria-label="hoch">▲</button>
+    <button data-dir="left" aria-label="links">◀</button>
+    <button data-dir="right" aria-label="rechts">▶</button>
+    <button data-dir="down" aria-label="runter">▼</button>
+  </div>
+
+  <button id="sound" class="corner" title="Ton an/aus">🔊</button>
+
+  <div id="screens">
+    <!-- START -->
+    <section id="scr-start" class="screen show">
+      <div class="card">
+        <h1>Flügel<span>hunger</span></h1>
+        <p class="lead">Halte eine Richtung gedrückt, dann kriecht die Raupe los &ndash; lässt du los,
+        bleibt sie stehen. Jedes Blatt macht sie ein Stück dicker, und wenn sie dick genug ist,
+        spinnt sie sich ein und wird zum Schmetterling.</p>
+        <div class="foods">
+          <div><span class="dot d-klee"></span><b>Klee</b><i>1 Punkt</i></div>
+          <div><span class="dot d-bluete"></span><b>Blüte</b><i>2 Punkte</i></div>
+          <div><span class="dot d-beere"></span><b>Beere</b><i>3 Punkte &middot; +3 Sek.</i></div>
+          <div><span class="dot d-gold"></span><b>Goldblatt</b><i>5 Punkte &middot; selten</i></div>
+        </div>
+        <p class="small">Der Park hat Teiche, Büsche, Felsen und Bäume &ndash; die sind im Weg. Vor ihnen, der Hecke
+        oder dem eigenen Körper bleibt sie einfach stehen, die Uhr läuft aber weiter. Ab <b>20 Punkten</b>
+        erscheint der Kokon-Ast; danach darfst du weiterfressen, je mehr und je edler die Blätter, desto
+        größer und bunter der Schmetterling.</p>
+        <button class="btn" id="btn-start">Losraupen</button>
+        <p class="keys">Pfeiltasten oder WASD gedrückt halten &middot; <b>Esc</b> pausiert</p>
+      </div>
+    </section>
+
+    <!-- ZEIT UM -->
+    <section id="scr-timeup" class="screen">
+      <div class="card">
+        <h2>Die Sonne geht unter …</h2>
+        <p class="lead">Die Raupe war noch nicht dick genug für die Verpuppung. Sie rollt sich unter einem Blatt zusammen und träumt von Flügeln.</p>
+        <div class="stats" id="timeup-stats"></div>
+        <button class="btn" id="btn-retry">Nochmal versuchen</button>
+      </div>
+    </section>
+
+
+    <!-- PAUSE -->
+    <section id="scr-pause" class="screen">
+      <div class="card">
+        <h2>Pause</h2>
+        <p class="lead">Die Raupe macht ein Nickerchen. Die Zeit läuft solange nicht weiter.</p>
+        <div class="stats" id="pause-stats"></div>
+        <button class="btn" id="btn-resume">Weiterraupen</button>
+        <p class="keys"><b>Esc</b> schließt die Pause ebenfalls</p>
+        <button class="btn ghost" id="btn-restart">Neu starten</button>
+      </div>
+    </section>
+
+    <!-- ERFOLG -->
+    <section id="scr-win" class="screen">
+      <div class="card wide">
+        <div class="rank" id="win-rank">Goldener Falter</div>
+        <h2>Geschafft!</h2>
+        <p class="lead" id="win-lead">Aus der dicken Raupe ist ein Schmetterling geworden.</p>
+        <div class="stats" id="win-stats"></div>
+        <button class="btn" id="btn-again">Neue Wiese</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script src="build/game.js"></script>
+</body>
+</html>
